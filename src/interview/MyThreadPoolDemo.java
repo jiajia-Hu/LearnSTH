@@ -6,18 +6,30 @@ public class MyThreadPoolDemo {
     public static void main(String[] args) {
 //        executorService();
 
+        discardPolicyHandler();
+
+        abortPolicyHandler();
+        callerRunsPolicyHandler();
+
+    }
+
+    private static void callerRunsPolicyHandler() {
         ExecutorService executorService = new ThreadPoolExecutor(2,
                 5,
                 2L,
                 TimeUnit.SECONDS,
                 new LinkedBlockingQueue<>(5),
                 Executors.defaultThreadFactory(),
-                new ThreadPoolExecutor.DiscardPolicy());
-        try{
-            for (int i = 1; i < 20; i++){
+                new ThreadPoolExecutor.CallerRunsPolicy());
+        handleWithThread(executorService);
+    }
+
+    private static void handleWithThread(ExecutorService executorService) {
+        try {
+            for (int i = 1; i < 20; i++) {
                 final int temp = i;
-                executorService.execute(()->{
-                    System.out.println(Thread.currentThread().getName() +"\t打印数值" + temp);
+                executorService.execute(() -> {
+                    System.out.println(Thread.currentThread().getName() + "\t打印数值" + temp);
                     try {
                         TimeUnit.MILLISECONDS.sleep(300);
                     } catch (InterruptedException e) {
@@ -25,13 +37,33 @@ public class MyThreadPoolDemo {
                     }
                 });
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
-        }finally {
+        } finally {
             executorService.shutdown();
         }
+    }
 
+    private static void abortPolicyHandler() {
+        ExecutorService executorService = new ThreadPoolExecutor(2,
+                5,
+                2L,
+                TimeUnit.SECONDS,
+                new LinkedBlockingQueue<>(5),
+                Executors.defaultThreadFactory(),
+                new ThreadPoolExecutor.AbortPolicy());
+        handleWithThread(executorService);
+    }
 
+    private static void discardPolicyHandler() {
+        ExecutorService executorService = new ThreadPoolExecutor(2,
+                5,
+                2L,
+                TimeUnit.SECONDS,
+                new LinkedBlockingQueue<>(5),
+                Executors.defaultThreadFactory(),
+                new ThreadPoolExecutor.DiscardPolicy());
+        handleWithThread(executorService);
     }
 
     private static void executorService() {
