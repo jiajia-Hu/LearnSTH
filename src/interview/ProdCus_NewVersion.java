@@ -1,9 +1,6 @@
 package interview;
 
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingDeque;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class ProdCus_NewVersion {
@@ -54,6 +51,7 @@ class Cake{
     public Cake(BlockingQueue<String> blockingQueue) {
         this.blockingQueue = blockingQueue;
     }
+    CountDownLatch countDownLatch = new CountDownLatch(1);
 
     public void prod() throws InterruptedException {
         String data ;
